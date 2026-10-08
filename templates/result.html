@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction Result | DiaPredict</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"
+            defer></script>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="{{ url_for('home') }}" class="brand">
+            <span class="brand-icon">+</span>
+            DiaPredict
+        </a>
+
+        <a href="{{ url_for('home') }}" class="nav-link">
+            New Prediction
+        </a>
+    </header>
+
+    <main class="container result-container">
+
+        <section class="result-card">
+
+            <span class="eyebrow">PREDICTION COMPLETE</span>
+
+            <div class="result-symbol {{ result_type }}">
+                {% if result_type == "warning" %}
+                    !
+                {% else %}
+                    &#10003;
+                {% endif %}
+            </div>
+
+            <h1>{{ result_title }}</h1>
+
+            <p class="result-description">
+                {{ result_message }}
+            </p>
+
+            <div class="score-panel">
+
+                <div class="score-heading">
+                    <span>Model score for positive class</span>
+                    <strong>{{ score }}%</strong>
+                </div>
+
+                <div class="score-track">
+                    <div
+                        class="score-fill {{ result_type }}"
+                        data-score="{{ score }}">
+                    </div>
+                </div>
+
+                <small>
+                    This is the model's estimated score, not a clinically
+                    validated personal risk estimate or medical diagnosis.
+                </small>
+
+            </div>
+
+            <div class="result-notice">
+                <strong>Understanding your result</strong>
+
+                <p>
+                    This result shows how the machine-learning model
+                    classified the submitted measurements. It cannot
+                    confirm or rule out diabetes. Consult a qualified
+                    healthcare professional for appropriate testing.
+                </p>
+            </div>
+
+            <h2 class="summary-title">Submitted Measurements</h2>
+
+            <div class="summary-grid">
+                {% for name, value in values.items() %}
+
+                <div class="summary-item">
+                    <span>{{ name }}</span>
+                    <strong>{{ value }}</strong>
+                </div>
+
+                {% endfor %}
+            </div>
+
+            <div class="result-actions">
+
+                <a href="{{ url_for('home') }}"
+                   class="btn btn-primary">
+                    Try Another Prediction
+                </a>
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        onclick="window.print()">
+                    Print Result
+                </button>
+
+            </div>
+
+            <p class="disclaimer">
+                Educational use only. This result is not a medical diagnosis
+                and should not be used to make healthcare decisions.
+            </p>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <span>DiaPredict | College Project</span>
+        <span>Built with Python and Flask</span>
+    </footer>
+
+    <script>
+        document.querySelectorAll(".score-fill[data-score]").forEach(
+            function (bar) {
+                const score = Number(bar.dataset.score);
+
+                if (Number.isFinite(score)) {
+                    const safeScore = Math.max(0, Math.min(100, score));
+                    bar.style.width = safeScore + "%";
+                }
+            }
+        );
+    </script>
+
+</body>
+</html>

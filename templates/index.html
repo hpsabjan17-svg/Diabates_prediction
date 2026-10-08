@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiaPredict | Diabetes Prediction</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"
+            defer></script>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="brand"><span class="brand-icon">+</span> DiaPredict</a>
+        <span class="nav-label">Machine Learning Project</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="hero-copy">
+                <span class="eyebrow">SMART HEALTH ANALYTICS</span>
+                <h1>Understand your health.<br><span>One step at a time.</span></h1>
+                <p>
+                    Explore an educational machine-learning prediction
+                    based on selected health measurements.
+                </p>
+                <div class="hero-tags">
+                    <span>✓ Machine Learning</span>
+                    <span>✓ Instant results</span>
+                    <span>✓ Simple interface</span>
+                </div>
+            </div>
+            <div class="hero-symbol" aria-hidden="true">
+                <div class="pulse-circle">
+                    <span>♥</span>
+                    <div class="pulse-line"></div>
+                </div>
+                <div class="floating-chip">Health insights</div>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">PREDICTION TOOL</span>
+                    <h2>Enter health measurements</h2>
+                    <p>Fill in all eight fields to run the model.</p>
+                </div>
+                <span class="step-badge">01 / INPUT</span>
+            </div>
+
+            {% if error %}
+            <div class="error-message" role="alert">{{ error }}</div>
+            {% endif %}
+
+            <form action="{{ url_for('predict') }}"
+                  method="POST" id="prediction-form">
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="Pregnancies">Pregnancies</label>
+                        <input id="Pregnancies" name="Pregnancies"
+                               type="number" min="0" max="30" step="1"
+                               required value="{{ form_data.get('Pregnancies', '') }}">
+                        <small>Number of pregnancies</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="Glucose">Glucose (mg/dL)</label>
+                        <input id="Glucose" name="Glucose"
+                               type="number" min="1" max="500" step="any"
+                               required value="{{ form_data.get('Glucose', '') }}">
+                        <small>Glucose measurement</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="BloodPressure">Blood pressure (mmHg)</label>
+                        <input id="BloodPressure" name="BloodPressure"
+                               type="number" min="1" max="300" step="any"
+                               required value="{{ form_data.get('BloodPressure', '') }}">
+                        <small>Diastolic blood pressure</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="SkinThickness">Skin thickness (mm)</label>
+                        <input id="SkinThickness" name="SkinThickness"
+                               type="number" min="0" max="150" step="any"
+                               required value="{{ form_data.get('SkinThickness', '') }}">
+                        <small>Triceps skinfold measurement</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="Insulin">Insulin (µU/mL)</label>
+                        <input id="Insulin" name="Insulin"
+                               type="number" min="0" max="3000" step="any"
+                               required value="{{ form_data.get('Insulin', '') }}">
+                        <small>Serum insulin measurement</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="BMI">BMI (kg/m²)</label>
+                        <input id="BMI" name="BMI"
+                               type="number" min="1" max="100" step="any"
+                               required value="{{ form_data.get('BMI', '') }}">
+                        <small>Body mass index</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="DiabetesPedigreeFunction">
+                            Diabetes pedigree function
+                        </label>
+                        <input id="DiabetesPedigreeFunction"
+                               name="DiabetesPedigreeFunction"
+                               type="number" min="0" max="10" step="any"
+                               required
+                               value="{{ form_data.get('DiabetesPedigreeFunction', '') }}">
+                        <small>Dataset's family-history-related measure</small>
+                    </div>
+
+                    <div class="field">
+                        <label for="Age">Age (years)</label>
+                        <input id="Age" name="Age"
+                               type="number" min="1" max="120" step="1"
+                               required value="{{ form_data.get('Age', '') }}">
+                        <small>Age in years</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">
+                        Clear form
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="predict-button">
+                        <span>Run prediction</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="privacy-note">
+                <span>ⓘ</span>
+                <p>Your entries are processed for this prediction and are
+                not saved to a database by this demo.</p>
+            </div>
+        </section>
+
+        <section class="info-grid">
+            <article class="info-card">
+                <span class="info-icon">01</span>
+                <h3>Enter measurements</h3>
+                <p>Provide the values requested by the trained model.</p>
+            </article>
+            <article class="info-card">
+                <span class="info-icon">02</span>
+                <h3>Model analysis</h3>
+                <p>The trained Random Forest classifier processes your inputs.</p>
+            </article>
+            <article class="info-card">
+                <span class="info-icon">03</span>
+                <h3>View the result</h3>
+                <p>Review the model output and its limitations.</p>
+            </article>
+        </section>
+
+        <div class="medical-note">
+            <strong>Educational use only</strong>
+            <p>This student project is not a medical device. Its model is
+            trained on a limited historical dataset and is not validated
+            for diagnosing individuals. Consult a qualified healthcare
+            professional for medical advice or testing.</p>
+        </div>
+    </main>
+
+    <footer>
+        <span>DiaPredict · College Machine Learning Project</span>
+        <span>Built with Python &amp; Flask</span>
+    </footer>
+</body>
+</html>
